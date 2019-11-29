@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+
+<head>
+    <title>地图显示</title>
+</head>
+
+<body style="margin: 30px;">
+    <div id="mainpart">
+        <input type="button" onclick="loadshange()" value="加载栅格地图" />
+        <input type="button" onclick="getXML()" value="加载XML地图" />
+        <!--因安全性，浏览器无法获取本地文件路径，由服务器传递文件-->
+        <input type="file" name="pic" id="fileload" style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0; />
+        <!--" -->
+        <!--绘制地图-->
+        <canvas id="mc" width="1600" height="750" style="border:1px solid black">
+            drawGrid('#09f', 10, 10);
+        </canvas>
+        <!--显示鼠标当前坐标-->
+        <div id="locationlabel"
+            style="border-block-color: #000000;border-width: 1px; width: 800; height: 30;font-size: 10pt;">
+            x=0;Y=0;
+        </div>
+        <div id='pointlist'></div>
+        <script type="text/javascript">
+            //读取canvas
+            var canvas = document.getElementById('mc');
+            var context = canvas.getContext('2d');
+
+            //加载XML地图
+            function getXML() {
+                var XMLfile = 'C:\\Users\\ceelbfeng\\Desktop\\front\\test.xml';
+                alert('test');
+                //var xmlDoc = new ActiveXObject('Msxml2.DOMDocument');
+                //xmlDoc.loadXML(XMLfile);
+                //var xmlDoc = checkXMLDocObj(XMLfile);
+                var xmlDoc = getxmlDoc("test.xml");
+                //var nodeList = xmlDoc.documentElement.getElementByTagName('point');
+                var nodeList= xmlDoc.getelemby
+                //locationlabel.innerHTML =check[1].getattribute('yPosition');
+                // for (var i = 0; i < nodeList.length; i++) {
+                //     nodeList[i].getattribute('name');
+                //     nodeList[i].getattribute('xPosition');
+                //     var yposition =nodeList[i].getattribute('yPosition')
+                //     locationlabel.innerHTML =check[i].getattribute('yPosition');
+                // }
+
+
+                // //IE
+                // if (navigator.userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) {
+                //     //遍历point节点
+                //     var nodeList = xmlDoc.documentElement.getElementsByTagName("point");
+                //     for (var i = 0; i < nodeList.length; i++) {
+                //         //
+
+                //     }
+                // //非IE
+                // else {
+                //         var nodeList = xmlDoc.getElementsByTagName("area");
+                //         for (var i = 0; i < nodeList.length; i++) {
+                //             //...遍历操作...
+                //         }
+                //     }
+                // }
+            }
+
+            // 依据浏览器类型解析xml文档
+            function getxmlDoc(xmlFile) {
+                var xmlDoc;
+                //if (window.ActiveXObject) {
+                xmlDoc = new ActiveXObject('Microsoft.XMLDOM');//IE
+                xmlDoc.async = false;
+                xmlDoc.load(xmlFile);
+                //}
+                // else if (isFirefox = navigator.userAgent.indexOf("Firefox") > 0) { //火狐
+
+                //     xmlDoc = document.implementation.createDocument('', '', null);
+                //     xmlDoc.load(xmlFile);
+                // }
+                // else { //谷歌
+                //     var xmlhttp = new window.XMLHttpRequest();
+                //     xmlhttp.open("GET", xmlFile, false);
+                //     xmlhttp.send(null);
+                //     if (xmlhttp.readyState == 4) {
+                //         xmlDoc = xmlhttp.responseXML.documentElement;
+                //     }
+            //}
+
+            return xmlDoc;
+            }
+
+            //绘制直线（含起终点坐标）
+            function drawLine(x1, y1, x2, y2) {
+                context.moveTo(x1, y1);
+                context.lineTo(x2, y2);
+                context.stroke();
+            }
+
+            //鼠标坐标追踪
+            canvas.onmousemove = function (e) {
+                var location = getLocation(e.clientX, e.clientY);
+                var locationlabel = document.getElementById('locationlabel');
+                locationlabel.innerHTML = "x=" + parseInt(location.x) + " ,y=" + parseInt(location.y);//显示取整后坐标
+            };
+            //获取坐标
+            function getLocation(x, y) {
+                var bbox = canvas.getBoundingClientRect();
+                return {
+                    x: (x - bbox.left) * (canvas.width / bbox.width) - 50,
+                    y: (y - bbox.top) * (canvas.height / bbox.height) - 30
+                };
+            }
+            //页面加载事件
+            window.onload = function () {
+                var canvas = document.getElementById('mc');
+                //异常处理
+                if (!canvas.getContext) {
+                    alert('当前浏览器不支持canvas,请更新到IE9及以上版本');
+                    return;
+                }
+                context.translate(50, 30);
+                drawAxis(context);
+                //绘制坐标轴的方法
+                function drawAxis(cxt) {
+                    var dx = 0,
+                        dy = 50,
+                        x = 0,
+                        y = 0,
+                        w = canvas.width,
+                        h = canvas.height;
+                    cxt.lineWidth = 1;
+                    cxt.strokeStyle = "silver";
+                    var textX = 50;
+                    var textY = 0;
+                    //绘制y轴
+                    for (var i = 0; i <= w - 50; i += 10) {
+                        drawLine(i, 0, i, h);
+                    }
+                    //绘制数字
+                    while (dx < w) {
+                        cxt.font = '9pt Arial';
+                        cxt.fillStyle = 'black';
+                        cxt.fillText(textY, dx, -5);
+                        textY += 50;
+                        dx += 50;
+                    }
+                    //绘制x轴
+                    i = 0;
+                    while (i <= h) {
+                        drawLine(0, i, w, i);
+                        i += 10;
+                    }
+                    //绘制数字
+                    while (dy < h) {
+                        cxt.font = '9pt Arial';
+                        cxt.fillStyle = 'black';
+                        cxt.fillText(textX, -30, dy);
+                        textX += 50;
+                        dy += 50;
+                    }
+                }
+            };
+        </script>
+    </div>
+</body>
