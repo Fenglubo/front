@@ -27,6 +27,14 @@
             var canvas = document.getElementById('mc');
             var context = canvas.getContext('2d');
 
+            //绘制点与点名
+            function draw_point(name, x, y) {
+                context.fillStyle = 'black';
+                context.arc(x, y, 10, 0, 2 * Math.PI);
+                context.stroke();
+                cxt.font = '9pt Arial';
+                cxt.fillText(x, y, -5); 
+            }
             //加载XML地图
             function getXML() {
                 var XMLfile = 'C:\\Users\\ceelbfeng\\Desktop\\front\\test.xml';
@@ -36,14 +44,15 @@
                 //var xmlDoc = checkXMLDocObj(XMLfile);
                 var xmlDoc = getxmlDoc("test.xml");
                 //var nodeList = xmlDoc.documentElement.getElementByTagName('point');
-                var nodeList= xmlDoc.getelemby
+                var nodeList = xmlDoc.document.getelementbytagname('point');
                 //locationlabel.innerHTML =check[1].getattribute('yPosition');
-                // for (var i = 0; i < nodeList.length; i++) {
-                //     nodeList[i].getattribute('name');
-                //     nodeList[i].getattribute('xPosition');
-                //     var yposition =nodeList[i].getattribute('yPosition')
-                //     locationlabel.innerHTML =check[i].getattribute('yPosition');
-                // }
+                for (var i = 0, xposition = 0, yposition = 0，pointname = 0; i < nodeList.length; i++) {
+                    pointname = nodeList[i].getattribute('name');
+                    xposition = nodeList[i].getattribute('xPosition');
+                    yposition = nodeList[i].getattribute('yPosition');
+                    draw_point()
+
+                }
 
 
                 // //IE
@@ -52,7 +61,6 @@
                 //     var nodeList = xmlDoc.documentElement.getElementsByTagName("point");
                 //     for (var i = 0; i < nodeList.length; i++) {
                 //         //
-
                 //     }
                 // //非IE
                 // else {
@@ -84,9 +92,9 @@
                 //     if (xmlhttp.readyState == 4) {
                 //         xmlDoc = xmlhttp.responseXML.documentElement;
                 //     }
-            //}
+                //}
 
-            return xmlDoc;
+                return xmlDoc;
             }
 
             //绘制直线（含起终点坐标）
@@ -120,7 +128,7 @@
                 }
                 context.translate(50, 30);
                 drawAxis(context);
-                //绘制坐标轴的方法
+                //绘制网格的方法
                 function drawAxis(cxt) {
                     var dx = 0,
                         dy = 50,
