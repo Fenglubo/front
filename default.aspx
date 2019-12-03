@@ -23,15 +23,34 @@
         //更改编辑状态
         function changeeditstatus(){
             var editstatus = document.getElementById('editstatus');
-            if (editstatus.getAttribute('value') == '进入编辑模式') {
+            if (iseditstatus()) {
                 editstatus.value='退出编辑模式';
             }
             else{
                 editstatus.value = '进入编辑模式';
             }
         }
+        //判断是否在编辑模式
+        function iseditstatus() {
+            var editstatus = document.getElementById('editstatus');
+            if (editstatus.getAttribute('value') == '进入编辑模式') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
         //canvas鼠标点击事件
-        canvas.onmouse 
+        canvas.onmouseup = function (e) {
+            //判断是否在点或线上，代码暂无
+
+
+            //鼠标不在点线上
+            var editstatus = document.getElementById('editstatus');
+            if (editstatus.getAttribute('value') == '进入编辑模式') {
+                editstatus.value = '退出编辑模式';
+            }
+        }
         //绘制点与点名
         function draw_point(name, x, y) {
             context.beginPath();
